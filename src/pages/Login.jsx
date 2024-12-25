@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { Form, Input, Button } from "@nextui-org/react";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [Loading, setIsloading] = useState(false);
+  const navigate = useNavigate();
   const handleLoginWithGoogleAuth = () => {
     const provider = new GoogleAuthProvider();
     provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
@@ -14,6 +17,7 @@ export default function Login() {
         const token = credential.accessToken;
         const user = result.user;
         console.log("user=>", user);
+        navigate("/");
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -22,6 +26,17 @@ export default function Login() {
         console.log("Errors=>", errorCode, errorMessage);
         const credential = GoogleAuthProvider.credentialFromError(error);
       });
+  };
+  const handleLogin = async () => {
+   try {
+    setIsloading(true)
+    await signInWithEmailAndPassword(auth,email,password).then(()=>{
+      navigate("/")
+      setIsloading(false)
+    })
+   } catch (error) {
+    setIsloading(false)
+   }
   };
   return (
     <div>
@@ -54,7 +69,13 @@ export default function Login() {
           size="lg"
           className="w-1/3 my-5 sm:full"
         />
-        <Button className="w-1/3" type="submit" variant="bordered">
+        <Button
+          onClick={handleLogin}
+          isLoading={Loading}
+          className="w-1/3"
+          type="submit"
+          variant="bordered"
+        >
           Login
         </Button>
         <h1 className="font-bold text-center ">OR</h1>

@@ -3,23 +3,29 @@ import { onAuthStateChanged } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import { auth } from "../utils/firebase";
 
-const AuthContext = createContext();
-const [loading, setLoading] = useState(true);
+export const AuthContext = createContext();
 function AuthContextProvider({ children }) {
   const [user, setUser] = useState({
     isLogin: false,
     userInfo: {},
   });
+  const [loading, setLoading] = useState(true);
   function onAuthChanged(user) {
-    if(user){
-        
-    }
-    else{
-
+    if (user) {
+      setUser({
+        isLogin:true,
+        userInfo: {
+          name: user?.displayName,
+          image: user?.photoURL,
+          email: user?.email,
+        },
+      });
+    } else {
+      setUser({ isLogin: false, userInfo: {} });
     }
     setTimeout(() => {
       setLoading(false);
-    }, 500) ;
+    }, 500);
   }
   useEffect(() => {
     const subscriber = onAuthStateChanged(auth, onAuthChanged);

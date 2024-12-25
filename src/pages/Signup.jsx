@@ -6,14 +6,14 @@ export default function Signup() {
     const [username,setUsername]=useState()
     const [email,setEmail]=useState()
     const [password,setPassword]=useState()
-  return (
-    <div>
-        <h1 className="font-bold text-center text-2xl my-5">SignUp </h1>
-    <Form validationBehavior="native" className="my-5 flex flex-col items-center">
-       <Input
-        isRequired
-        label="Username"
-        labelPlacement="outside"
+    return (
+      <div>
+          <h1 className="font-bold text-center text-2xl my-5">SignUp </h1>
+      <Form validationBehavior="native" className="my-5 flex flex-col items-center">
+        <Input
+          isRequired
+          label="Username"
+          labelPlacement="outside"
         name="Username"
         value={username}
         onChange={(e)=>setUsername(e.target.value)}

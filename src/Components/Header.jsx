@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Navbar,
   NavbarBrand,
@@ -8,9 +8,12 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   Button,
+  Avatar,
 } from "@nextui-org/react";
-import { Link } from "react-router";
-
+import { Link, useNavigate } from "react-router";
+import { AuthContext } from "../Context/AuthContext";
+import { signOut } from "firebase/auth";
+import { auth } from "../utils/firebase";
 export const AcmeLogo = () => {
   return (
     <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
@@ -25,6 +28,16 @@ export const AcmeLogo = () => {
 };
 
 export default function Header() {
+  const { user, setUser } = useContext(AuthContext);
+  const navigate=useNavigate("/")
+  // console.log("user pic=>",user?.userInfo?.photoURL);
+  // console.log("userInfo=>",user?.userInfo);
+  console.log("email user ki=>", user?.userInfo?.email);
+  console.log("User photoURL:", user?.userInfo?.image);
+  console.log("user=>", user);
+  const handleLogout = async () => {
+    await signOut(auth)
+  };
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const menuItems = [
@@ -71,15 +84,30 @@ export default function Header() {
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <Link to={'/Login'}>Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-          
-          <Button to={'/Signup'} as={Link} color="primary" href="#" variant="flat">
-            Sign Up
+        {user?.isLogin ? (
+          <Avatar src={user?.userInfo?.image} size="md" />
+        ) : (
+          <NavbarItem>
+            <Button
+              to={"/Signup"}
+              as={Link}
+              color="primary"
+              href="#"
+              variant="flat"
+            >
+              Sign Up
+            </Button>
+          </NavbarItem>
+        )}
+        {user?.isLogin ? (
+          <Button onClick={handleLogout} color="primary" variant="faded">
+            Logout
           </Button>
-        </NavbarItem>
+        ) : (
+          <NavbarItem className="hidden lg:flex">
+            <Link to={"/Login"}>Login</Link>
+          </NavbarItem>
+        )}
       </NavbarContent>
       <NavbarMenu>
         {menuItems.map((item, index) => (
@@ -87,7 +115,11 @@ export default function Header() {
             <Link
               className="w-full"
               color={
-                index === 2 ? "primary" : index === menuItems.length - 1 ? "danger" : "foreground"
+                index === 2
+                  ? "primary"
+                  : index === menuItems.length - 1
+                  ? "danger"
+                  : "foreground"
               }
               href="#"
               size="lg"
@@ -100,4 +132,3 @@ export default function Header() {
     </Navbar>
   );
 }
-
