@@ -1,6 +1,7 @@
 import { useState } from "react";
 import React from "react";
 import {Form, Input, Button} from "@nextui-org/react";
+import { Link } from "react-router";
 export default function Signup() {
     const [username,setUsername]=useState()
     const [email,setEmail]=useState()
@@ -48,7 +49,13 @@ export default function Signup() {
       <Button className="w-1/3" type="submit" variant="bordered">
       SignUp
       </Button>
+      <h1 className="font-bold text-center mt-2">OR</h1>
     </Form>
+    <Link to={'/Login'} className="flex justify-center">
+      <Button className=" w-1/3" type="submit" variant="bordered">
+              Login
+            </Button>
+      </Link>
         </div>
   );
 }
